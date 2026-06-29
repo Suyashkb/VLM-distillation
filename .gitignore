@@ -1,0 +1,29 @@
+# Data — too large for git
+data/raw/
+data/cache/
+*.h5
+*.hdf5
+*.tmp
+
+# Model weights
+checkpoints/
+
+# Raw benchmark numbers (PNGs are kept)
+results/benchmark_results.json
+results/benchmark_summary.csv
+
+# Python env
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+*.egg/
+.eggs/
+
+# Executed notebooks (large embedded outputs)
+notebooks/*_executed.ipynb
+
+# OS / editor
+.DS_Store
+.idea/
+*.swp

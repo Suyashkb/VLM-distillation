@@ -1,0 +1,7 @@
+# Install this AFTER requirements.txt, inside a GPU pod (needs CUDA to compile).
+# torch must already be installed in the venv before running this.
+#
+#   uv pip install flash-attn --no-build-isolation
+#
+# Or via the setup job:  bash jobs/cpu.sh
+flash-attn>=2.5.0

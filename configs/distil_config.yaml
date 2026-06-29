@@ -1,0 +1,53 @@
+# VLM Distillation Configuration
+
+data:
+  vqa_questions_url: "https://s3.amazonaws.com/cvmlp/vqa/mscoco/vqa/v2_Questions_Val_mscoco.zip"
+  vqa_annotations_url: "https://s3.amazonaws.com/cvmlp/vqa/mscoco/vqa/v2_Annotations_Val_mscoco.zip"
+  coco_images_url: "http://images.cocodataset.org/zips/val2014.zip"
+  data_dir: "data/raw"
+  cache_dir: "data/cache"
+  num_samples: 5000         # mini-val subset size
+  num_answers: 3129         # top-K answer vocab size
+  image_size: 224
+  num_workers: 8
+
+teacher:
+  model_name: "microsoft/Florence-2-base"
+  # Indices of decoder layers to hook for feature + attention extraction (0-indexed)
+  hook_layers: [0, 2, 3, 5]  # Florence-2-base has 6 decoder layers (indices 0-5)
+  cache_file: "data/cache/teacher_features.h5"
+  cache_batch_size: 64  # Florence-2 runs at 384×384 — keep lower than training batch
+
+student:
+  vision_backbone: "mobilevitv2_100"  # timm model name, ~20M params
+  vision_embed_dim: 512
+  decoder_layers: 4
+  decoder_heads: 8
+  decoder_ffn_dim: 1024
+  dropout: 0.1
+  # projection heads to match teacher feature dims
+  teacher_feat_dim: 768    # Florence-2-base hidden size
+
+distillation:
+  alpha: 1.0    # task loss weight
+  beta: 0.5     # feature matching loss weight
+  gamma: 0.1    # attention transfer loss weight
+  temperature: 4.0  # softmax temperature for soft targets
+
+training:
+  epochs: 15
+  batch_size: 192  # H100 80GB: student-only training (teacher cached), targets ~75-80% GPU mem
+  learning_rate: 3.0e-4
+  weight_decay: 0.01
+  warmup_steps: 200
+  grad_clip: 1.0
+  val_freq: 1        # validate every N epochs
+  checkpoint_dir: "checkpoints"
+  log_interval: 50   # log every N steps
+  seed: 42
+
+benchmarking:
+  warmup_batches: 10
+  timing_batches: 100
+  batch_sizes: [1, 32, 64, 192]
+  results_dir: "results"

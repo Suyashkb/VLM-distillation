@@ -1,0 +1,7 @@
+Model,Optimization,Latency mean (ms),Latency std (ms),Throughput (samp/s),Speedup
+teacher,FP32 baseline,2472.2,76.47,78,1.0×
+teacher,bf16,705.9,0.53,272,3.5×
+teacher,bf16 + compile,454.6,1.22,422,5.4×
+student,FP32 baseline,40.9,0.07,"4,700",60.5×
+student,bf16,26.5,0.03,"7,234",93.1×
+student,bf16 + compile,17.9,0.12,"10,704",137.8×
